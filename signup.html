@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cognify Intern — Signup (Black Background)</title>
+<meta name="description" content="Signup for Cognify Intern — choose a topic and begin projects." />
+<style>
+  :root{
+    --c-indigo:#4F46E5; --c-teal:#14B8A6; --c-amber:#F59E0B;
+    --bg-black:#000000; --panel:#07101a; --muted:#9fb0c3; --glass: rgba(255,255,255,0.02);
+    --focus: 3px solid rgba(20,184,166,0.18);
+    --text-light: #E6EEF6;
+  }
+  /* Page base */
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;background:var(--bg-black);color:var(--text-light);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:var(--focus);outline-offset:3px}
+  /* Container */
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+  /* Card */
+  .card{width:100%;max-width:980px;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:420px 1fr;box-shadow:0 30px 80px rgba(0,0,0,0.6);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+  @media(max-width:900px){ .card{grid-template-columns:1fr;} .left{order:-1} }
+  /* Left panel */
+  .left{padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));display:flex;flex-direction:column;gap:12px}
+  .logo{width:62px;height:62px;border-radius:14px;background:linear-gradient(135deg,var(--c-indigo),var(--c-teal));display:grid;place-items:center;color:white;font-weight:900;margin-bottom:6px}
+  h2{margin:0;color:var(--text-light)}
+  p.lead{color:var(--muted);margin:0 0 8px}
+  .steps{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .step{padding:10px;border-radius:10px;background:rgba(255,255,255,0.015);display:flex;justify-content:space-between;align-items:center;color:var(--muted)}
+  /* Right panel (form) */
+  .right{padding:24px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.16))}
+  form{display:grid;gap:12px}
+  input,select,button{font:inherit}
+  input,select{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text-light)}
+  label{font-size:13px;color:var(--muted)}
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+  .topic-tile{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid rgba(255,255,255,0.04);color:var(--text-light);display:flex;align-items:center;gap:8px}
+  .topic-tile.selected{box-shadow:0 16px 40px rgba(79,70,229,0.08);transform:translateY(-6px)}
+  .price-pop{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(79,70,229,0.03),rgba(20,184,166,0.02));color:var(--text-light)}
+  .cta-row{display:flex;gap:12px;align-items:center;margin-top:10px}
+  .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn-primary{background:linear-gradient(90deg,var(--c-indigo),var(--c-teal));color:#fff}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text-light)}
+  .muted{color:var(--muted)}
+  /* Floating badge + animation */
+  .badge-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;justify-content:center;padding-top:8px}
+  .badge{width:110px;height:110px;border-radius:18px;background:linear-gradient(135deg,var(--c-teal),var(--c-indigo));display:grid;place-items:center;color:white;font-size:28px;font-weight:900;box-shadow:0 18px 48px rgba(20,40,90,0.6);animation:float 4s ease-in-out infinite}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+  @media (prefers-reduced-motion: reduce){ .badge{animation:none} .topic-tile{transition:none} }
+  /* Canvas behind card for subtle movement */
+  .canvas-wrap{position:absolute;inset:0;z-index:-1;pointer-events:none}
+  /* small responsive tweaks */
+  @media(max-width:520px){ .logo{width:54px;height:54px} .badge{width:86px;height:86px;font-size:22px} }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="signupTitle">
+      <!-- Canvas container behind the card -->
+      <div class="canvas-wrap" aria-hidden="true">
+        <canvas id="bgCanvas" style="width:100%;height:100%;display:block"></canvas>
+      </div>
+
+      <!-- LEFT: Info & badge -->
+      <div class="left" aria-hidden="false">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="logo" aria-hidden="true">CI</div>
+          <div>
+            <div style="font-weight:800">Cognify Intern</div>
+            <div style="font-size:12px;color:var(--muted)">Launch Skills. Ship Work. Start Careers.</div>
+          </div>
+        </div>
+
+        <h2 id="signupTitle">Create your account</h2>
+        <p class="lead">Pick a topic, finish four phases — Basic (Free), Beginner (₹50), Intermediate (₹75), Advanced (₹100).</p>
+
+        <div class="steps" aria-hidden="true">
+          <div class="step"><span>Phase 1 — Basic</span><span class="muted">Free</span></div>
+          <div class="step"><span>Phase 2 — Beginner</span><span class="muted">₹50</span></div>
+          <div class="step"><span>Phase 3 — Intermediate</span><span class="muted">₹75</span></div>
+          <div class="step"><span>Phase 4 — Advanced</span><span class="muted">₹100</span></div>
+        </div>
+
+        <div class="badge-wrap" aria-hidden="true">
+          <div class="badge">CI</div>
+          <div style="color:var(--muted);text-align:center;max-width:240px">No mentors — task-based projects and automated verification for certificates.</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Form -->
+      <div class="right" role="region" aria-labelledby="signupTitle">
+        <form id="signupForm" novalidate>
+          <div style="display:flex;gap:10px">
+            <input id="name" name="name" placeholder="Full name" required aria-required="true">
+            <input id="email" name="email" type="email" placeholder="Email" required aria-required="true">
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <input id="pass" name="pass" type="password" placeholder="Password" required aria-required="true">
+            <select id="level" aria-label="Experience level">
+              <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="muted">Pick a topic to start</label>
+            <div class="topic-grid" id="topicGrid" role="listbox" aria-label="Topic selection">
+              <!-- JS populates -->
+            </div>
+          </div>
+
+          <div id="pricePop" class="price-pop" aria-live="polite">Selected: —</div>
+
+          <div class="cta-row">
+            <button type="submit" class="btn btn-primary">Create account</button>
+            <a href="login.html" class="btn btn-ghost" role="button">Sign in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* -------------------------
+   Tracking stub (safe)
+--------------------------*/
+window.Cognify = window.Cognify || {};
+window.Cognify.track = window.Cognify.track || function(evt, data){ console.log('Cognify.track', evt, data); };
+
+/* -------------------------
+   Topics population + selection
+--------------------------*/
+const topics = ["HTML & CSS","JavaScript","React","Python","SQL","Pandas","Machine Learning","Git","Data Structures","Node.js","Algorithms","Design","DevOps","Mobile Web","Security"];
+const grid = document.getElementById('topicGrid');
+let selectedTopic = null;
+
+topics.forEach((t, idx) => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'topic-tile';
+  btn.setAttribute('role','option');
+  btn.setAttribute('aria-selected','false');
+  btn.innerHTML = `<svg width="28" height="28"><rect width="28" height="28" rx="6" fill="${pickColor(idx)}"></rect></svg><span>${t}</span>`;
+  btn.onclick = () => {
+    grid.querySelectorAll('.topic-tile').forEach(n => { n.classList.remove('selected'); n.setAttribute('aria-selected','false'); });
+    btn.classList.add('selected'); btn.setAttribute('aria-selected','true');
+    selectedTopic = t;
+    document.getElementById('pricePop').textContent = `Selected: ${t} — Prices: Basic Free / Beginner ₹50 / Intermediate ₹75 / Advanced ₹100`;
+    window.Cognify.track('topic_selected', {topic:t});
+  };
+  grid.appendChild(btn);
+});
+
+function pickColor(i){
+  const palette = ["#4F46E5","#14B8A6","#F59E0B","#2563EB","#7C3AED","#06B6D4"];
+  return palette[i % palette.length];
+}
+
+/* -------------------------
+   Signup submit (demo)
+--------------------------*/
+document.getElementById('signupForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if(!selectedTopic){
+    alert('Please choose a topic to start.');
+    return;
+  }
+  const payload = { name: this.name.value, email: this.email.value, topic: selectedTopic };
+  window.Cognify.track('signup', payload);
+  alert('Signup (demo) successful — redirecting to dashboard.');
+  window.location.href = 'index.html';
+});
+
+/* -------------------------
+   Canvas background (dark waves)
+   - DPR clamp
+   - lazy-run via IntersectionObserver
+   - respects prefers-reduced-motion
+--------------------------*/
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const MAX_DPR = 2;
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    const rect = canvas.getBoundingClientRect();
+    // if zero-size (not visible) set defaults
+    const width = Math.max(1, Math.floor((rect.width || window.innerWidth) * dpr));
+    const height = Math.max(1, Math.floor((rect.height || window.innerHeight) * 0.6 * dpr));
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = (rect.width || window.innerWidth) + 'px';
+    canvas.style.height = ((rect.height || window.innerHeight) * 0.6) + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize, {passive:true});
+
+  let running = false;
+  const layers = [
+    {amp:26, wl:420, speed:0.0009, color:'rgba(79,70,229,0.14)', baseline:0.62},
+    {amp:16, wl:260, speed:0.0013, color:'rgba(20,184,166,0.09)', baseline:0.74}
+  ];
+
+  function draw(now){
+    if(!running) return;
+    resize();
+    const w = canvas.width / (window.devicePixelRatio||1);
+    const h = canvas.height / (window.devicePixelRatio||1);
+    ctx.clearRect(0,0,w,h);
+    // darker gradient
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0,'rgba(0,0,0,0.3)');
+    g.addColorStop(1,'rgba(0,0,0,0.6)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+
+    const t = now * 0.001;
+    for(const L of layers){
+      ctx.beginPath();
+      ctx.moveTo(0,h);
+      const base = Math.round(h * L.baseline);
+      for(let x=0;x<=w;x+=12){
+        const th = (x / L.wl) * Math.PI * 2;
+        const y = base + Math.sin(th + t * L.speed * 2*Math.PI) * L.amp;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(w,h); ctx.closePath();
+      ctx.fillStyle = L.color; ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  // Observe visibility of the card to start/stop animation
+  const card = document.querySelector('.card');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en => {
+      running = en.isIntersecting && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(running) requestAnimationFrame(draw);
+    });
+  }, { threshold: 0.15 });
+  io.observe(card);
+
+  // pause on tab hidden
+  document.addEventListener('visibilitychange', ()=> { if(document.hidden) running=false; else { /* will resume via IO */ }});
+})();
+
+</script>
+</body>
+</html>

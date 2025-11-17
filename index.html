@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cognify Intern — Launch Skills. Start Careers.</title>
+
+<style>
+/* ----------------------------------------------------
+   BRAND VARIABLES
+----------------------------------------------------- */
+:root {
+  --c-indigo:#4F46E5;
+  --c-teal:#14B8A6;
+  --c-amber:#F59E0B;
+  --bg:#F8FAFC;
+  --text:#0F172A;
+  --muted:#475569;
+  --glass:rgba(255,255,255,0.85);
+  --radius:14px;
+}
+html.dark {
+  --bg:#050f1d;
+  --text:#d6e2ef;
+  --muted:#94a8c3;
+  --glass:rgba(3,8,20,0.7);
+}
+
+/* ----------------------------------------------------
+   BASE
+----------------------------------------------------- */
+body {
+  margin:0;
+  font-family:Inter,system-ui,Arial;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+a { text-decoration:none; color:inherit; }
+button { cursor:pointer; }
+
+/* ----------------------------------------------------
+   HEADER
+----------------------------------------------------- */
+header {
+  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.04);
+  padding:14px 20px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.nav {
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+}
+.logo-box {
+  width:46px;height:46px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--c-indigo),var(--c-teal));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  color:#fff;
+  transform: translateY(0);
+  transition: transform 0.4s ease;
+}
+.logo-box:hover {
+  transform: translateY(-4px);
+}
+.nav-links {
+  display:flex;
+  gap:16px;
+  margin-left:24px;
+}
+.actions {
+  margin-left:auto;
+  display:flex;
+  gap:10px;
+}
+.btn {
+  padding:8px 12px;
+  border-radius:10px;
+  border:0;
+  font-weight:700;
+}
+.btn-ghost {
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.1);
+  color:var(--text);
+}
+.btn-primary {
+  background:linear-gradient(90deg,var(--c-indigo),var(--c-teal));
+  color:#fff;
+}
+
+/* ----------------------------------------------------
+   HERO
+----------------------------------------------------- */
+.hero {
+  position:relative;
+  min-height:60vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  overflow:hidden;
+}
+#bgCanvas {
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
+.hero-box {
+  position:relative;
+  z-index:5;
+  background:var(--glass);
+  padding:30px;
+  max-width:700px;
+  border-radius:14px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+  animation: fadeSlideUp 0.7s ease both;
+}
+.hero h1 { margin:0 0 10px; font-size:32px; }
+.hero p { margin:0 0 18px; color:var(--muted); }
+
+/* ----------------------------------------------------
+   ABOUT SECTION with elevation animations
+----------------------------------------------------- */
+.about {
+  max-width:1200px;
+  margin:40px auto;
+  padding:0 20px;
+}
+.about-title {
+  text-align:center;
+  font-size:32px;
+  margin-bottom:10px;
+}
+.about-sub {
+  text-align:center;
+  max-width:700px;
+  margin:auto;
+  color:var(--muted);
+}
+
+/* floating badge */
+.floating-badge {
+  width:120px;
+  height:120px;
+  margin:30px auto 14px;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--c-indigo),var(--c-teal));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:28px;
+  font-weight:900;
+  box-shadow:0 18px 40px rgba(0,0,0,0.2);
+  animation: floatBadge 4s ease-in-out infinite;
+}
+
+@keyframes floatBadge {
+  0% { transform:translateY(0); }
+  50% { transform:translateY(-12px); }
+  100% { transform:translateY(0); }
+}
+
+/* feature cards */
+.features {
+  margin-top:30px;
+  display:grid;
+  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+}
+.feature-card {
+  padding:18px;
+  background:var(--glass);
+  border-radius:14px;
+  box-shadow:0 8px 26px rgba(0,0,0,0.08);
+  transform:translateY(40px);
+  opacity:0;
+  transition:all 0.6s ease;
+}
+.feature-card.show {
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* ----------------------------------------------------
+   TOPICS
+----------------------------------------------------- */
+section { max-width:1200px; margin:40px auto; padding:0 20px; }
+.topics-grid {
+  display:grid;
+  gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+}
+.topic {
+  padding:14px;
+  background:var(--glass);
+  border-radius:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(2,6,23,0.1);
+  transition:transform 0.25s ease;
+}
+.topic:hover{
+  transform:translateY(-4px);
+}
+.topic svg { width:40px;height:40px; }
+
+/* ----------------------------------------------------
+   FEEDBACK
+----------------------------------------------------- */
+.feedback-box {
+  background:var(--glass);
+  border-radius:14px;
+  padding:18px;
+}
+.feedback-track {
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+}
+.fb-card {
+  min-width:260px;
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.1);
+}
+.avatar {
+  width:50px;height:50px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.stars { color:var(--c-amber); }
+
+/* ----------------------------------------------------
+   MODAL
+----------------------------------------------------- */
+.modal-backdrop {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+}
+.modal {
+  background:var(--glass);
+  padding:20px;
+  width:90%;
+  max-width:500px;
+  border-radius:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.price-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+.price-tier {
+  padding:10px;
+  background:rgba(255,255,255,0.1);
+  border-radius:10px;
+  text-align:center;
+  font-weight:600;
+}
+
+/* ----------------------------------------------------
+   FOOTER
+----------------------------------------------------- */
+footer {
+  text-align:center;
+  color:var(--muted);
+  padding:30px 0;
+  margin-top:40px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+
+/* ----------------------------------------------------
+   ANIMATIONS
+----------------------------------------------------- */
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(40px); }
+  to { opacity:1; transform:translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ------------------ HEADER ------------------ -->
+<header>
+  <div class="nav">
+    <div class="logo-box">CI</div>
+
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#topics">Topics</a>
+      <a href="#feedback">Students</a>
+    </div>
+
+    <div class="actions">
+      <button id="themeToggle" class="btn">🌓</button>
+      <a href="login.html" class="btn btn-ghost">Login</a>
+      <a href="signup.html" class="btn btn-primary">Signup</a>
+    </div>
+  </div>
+</header>
+
+<!-- ------------------ HERO ------------------ -->
+<section class="hero">
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="hero-box">
+    <h1>Cognify Intern</h1>
+    <p>Learn practical skills, complete 4 phases, and earn a government-approved certificate.</p>
+
+    <a class="btn btn-primary" href="#about">Explore More</a>
+  </div>
+</section>
+
+<!-- ------------------ ABOUT SECTION ------------------ -->
+<section id="about" class="about">
+  <div class="floating-badge">CI</div>
+
+  <h2 class="about-title">About Cognify Intern</h2>
+  <p class="about-sub">
+    Cognify Intern helps students learn real-world skills by completing structured project phases.
+    No mentors required — everything is task-based, guided, and certificate verified.
+  </p>
+
+  <div class="features" id="features">
+    <div class="feature-card">💡 Task-based structured projects</div>
+    <div class="feature-card">🚀 Beginner to Advanced learning</div>
+    <div class="feature-card">🏆 Government-approved certification</div>
+  </div>
+</section>
+
+<!-- ------------------ TOPICS ------------------ -->
+<section id="topics">
+  <h2>Choose a Topic</h2>
+  <div class="topics-grid" id="topicsGrid"></div>
+</section>
+
+<!-- ------------------ FEEDBACK ------------------ -->
+<section id="feedback">
+  <h2>Student Feedback</h2>
+
+  <div class="feedback-box">
+    <div class="feedback-track" id="feedbackTrack"></div>
+  </div>
+</section>
+
+<!-- ------------------ MODAL ------------------ -->
+<div class="modal-backdrop" id="modalBg">
+  <div class="modal">
+    <h3 id="modalTitle">Topic</hh3>
+    <p>Phase Pricing</p>
+
+    <div class="price-grid">
+      <div class="price-tier">Basic<br><strong>Free</strong></div>
+      <div class="price-tier">Beginner<br><strong>₹50</strong></div>
+      <div class="price-tier">Intermediate<br><strong>₹75</strong></div>
+      <div class="price-tier">Advanced<br><strong>₹100</strong></div>
+    </div>
+
+    <br>
+    <a href="signup.html" class="btn btn-primary">Signup</a>
+    <button class="btn btn-ghost" id="closeModal">Close</button>
+  </div>
+</div>
+
+<!-- ------------------ FOOTER ------------------ -->
+<footer>
+  © <span id="year"></span> Cognify Intern — All Rights Reserved.
+</footer>
+
+<script>
+/* -------------------------------------------------------
+   1) THEME TOGGLE
+-------------------------------------------------------- */
+document.getElementById("themeToggle").onclick = () =>
+  document.documentElement.classList.toggle("dark");
+
+/* -------------------------------------------------------
+   2) TRACKING (stub)
+-------------------------------------------------------- */
+window.Cognify = {
+  track: (e,d={}) => console.log("Track:", e, d)
+};
+
+/* -------------------------------------------------------
+   3) TOPICS
+-------------------------------------------------------- */
+const topics = [
+  "HTML & CSS","JavaScript","React","Python","Pandas",
+  "Machine Learning","Git","SQL","Data Structures",
+  "Node.js","Algorithms","Mobile Web","Security",
+  "Product Design","DevOps"
+];
+
+const topicsGrid = document.getElementById("topicsGrid");
+
+topics.forEach(t => {
+  const d=document.createElement("div");
+  d.className="topic";
+  d.innerHTML=`<svg><rect width="40" height="40" rx="8" fill="${randCol()}"></rect></svg><b>${t}</b>`;
+  d.onclick=()=>openModal(t);
+  topicsGrid.appendChild(d);
+});
+
+function randCol(){
+  const c=["#4F46E5","#14B8A6","#F59E0B","#2563EB","#06B6D4","#7C3AED"];
+  return c[Math.floor(Math.random()*c.length)];
+}
+
+/* -------------------------------------------------------
+   4) FEEDBACK
+-------------------------------------------------------- */
+const names=["Aisha","Ravi","Priya","Sai","Vikram","Nisha","Arjun","Sanjay","Meera","Gopal"];
+const texts=[
+  "Loved the projects!","Super affordable & useful!","Clear tasks!",
+  "Certificate helped me!","Boosted my resume!",
+  "Fun learning!","Beginner friendly!","Great UI!",
+  "Worth it","Helpful tasks!"
+];
+
+const feedbackTrack=document.getElementById("feedbackTrack");
+
+names.forEach((n,i)=>{
+  let card=document.createElement("div");
+  card.className="fb-card";
+  card.innerHTML=`
+    <div class="avatar" style="background:${randCol()}">${n[0]}</div>
+    <b>${n}</b>
+    <div class="stars">★★★★★</div>
+    <p>${texts[i]}</p>`;
+  feedbackTrack.appendChild(card);
+});
+
+/* -------------------------------------------------------
+   5) MODAL
+-------------------------------------------------------- */
+const modalBg=document.getElementById("modalBg");
+const modalTitle=document.getElementById("modalTitle");
+
+function openModal(topic){
+  modalTitle.textContent=topic;
+  modalBg.style.display="flex";
+}
+
+document.getElementById("closeModal").onclick=()=>modalBg.style.display="none";
+
+/* -------------------------------------------------------
+   6) ABOUT — INTERSECTION OBSERVER animations
+-------------------------------------------------------- */
+const featureCards=document.querySelectorAll(".feature-card");
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add("show");
+    }
+  });
+},{
+  threshold:0.2
+});
+
+featureCards.forEach(c=>observer.observe(c));
+
+/* -------------------------------------------------------
+   7) YEAR
+-------------------------------------------------------- */
+document.getElementById("year").textContent=new Date().getFullYear();
+
+/* -------------------------------------------------------
+   8) CANVAS WAVES — with DPR clamp + lazy-run
+-------------------------------------------------------- */
+let animRunning=false;
+
+(function(){
+  const canvas=document.getElementById("bgCanvas");
+  const ctx=canvas.getContext("2d");
+  const MAX_DPR=2;
+
+  function resize(){
+    const dpr=Math.min(window.devicePixelRatio||1,MAX_DPR);
+    canvas.width=window.innerWidth*dpr;
+    canvas.height=(window.innerHeight*0.6)*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.onresize=resize;
+
+  function draw(t){
+    if(!animRunning)return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const h=canvas.height/(window.devicePixelRatio||1);
+    const w=canvas.width/(window.devicePixelRatio||1);
+
+    const waves=[
+      {amp:30,speed:0.0008,color:"rgba(79,70,229,0.15)"},
+      {amp:20,speed:0.0012,color:"rgba(20,184,166,0.12)"},
+      {amp:10,speed:0.0016,color:"rgba(245,158,11,0.12)"}
+    ];
+
+    waves.forEach(wv=>{
+      ctx.beginPath();
+      ctx.moveTo(0,h);
+      for(let x=0;x<=w;x+=10){
+        const y=h*0.5 + Math.sin((x*0.01)+(t*wv.speed))*wv.amp;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(w,h);ctx.closePath();
+      ctx.fillStyle=wv.color;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  const hero=document.querySelector(".hero");
+  const canvasObs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      animRunning=e.isIntersecting;
+      if(animRunning) requestAnimationFrame(draw);
+    });
+  });
+  canvasObs.observe(hero);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cognify Intern — Login</title>
+<meta name="description" content="Login to Cognify Intern — pick topics, complete phases, earn certificates." />
+<style>
+  :root{
+    --c-indigo:#4F46E5; --c-teal:#14B8A6; --c-amber:#F59E0B;
+    --bg-dark:#05060a; --card:#0b1220; --muted:#9fb0c3; --glass: rgba(255,255,255,0.03);
+    --focus: 3px solid rgba(20,184,166,0.18);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;background:var(--bg-dark);color:#E6EEF6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+  /* hero panel */
+  .panel{width:100%;max-width:920px;border-radius:14px;overflow:hidden;position:relative;display:grid;grid-template-columns:1fr 420px;box-shadow:0 18px 60px rgba(2,6,23,0.6)}
+  @media(max-width:880px){ .panel{grid-template-columns:1fr; } .aside{order:-1} }
+  .left{padding:36px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .logo {width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--c-indigo),var(--c-teal));display:grid;place-items:center;font-weight:900;color:white}
+  h1{margin:0;font-size:20px}
+  p.lead{margin:8px 0 18px;color:var(--muted)}
+  form{display:flex;flex-direction:column;gap:12px}
+  label{font-size:13px;color:var(--muted)}
+  input[type="email"], input[type="password"]{
+    padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;font-size:15px
+  }
+  .actions{display:flex;gap:10px;align-items:center;margin-top:6px}
+  .btn{padding:10px 12px;border-radius:10px;border:0;font-weight:700;background:var(--c-indigo);color:white;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#E6EEF6}
+  .hint{font-size:13px;color:var(--muted)}
+  .footer-note{margin-top:12px;color:var(--muted);font-size:13px}
+  :focus-visible{outline:var(--focus);outline-offset:3px}
+  /* aside with animated blobs */
+  .aside{background:linear-gradient(180deg, rgba(20,20,30,0.24), rgba(6,8,14,0.4));padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+  .badge{width:110px;height:110px;border-radius:18px;background:linear-gradient(135deg,var(--c-teal),var(--c-indigo));display:grid;place-items:center;font-weight:900;color:white;font-size:28px;box-shadow:0 18px 48px rgba(20,40,90,0.45);animation:float 5s ease-in-out infinite}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+  .aside p{color:var(--muted);text-align:center;margin:8px 0 0}
+  /* waves canvas */
+  #bg{position:absolute; inset:0; z-index:0}
+  /* reduced-motion respect */
+  @media (prefers-reduced-motion: reduce){
+    .badge{animation:none}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel" role="main" aria-labelledby="loginTitle">
+      <canvas id="bg" aria-hidden="true"></canvas>
+
+      <div class="left" style="position:relative;z-index:3">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">CI</div>
+          <div>
+            <div style="font-weight:800">Cognify Intern</div>
+            <div style="font-size:12px;color:var(--muted)">Launch Skills. Ship Work. Start Careers.</div>
+          </div>
+        </div>
+
+        <h1 id="loginTitle">Welcome back — sign in</h1>
+        <p class="lead">Sign in to continue your projects and access topics. No mentors — build, submit, & certify.</p>
+
+        <form id="loginForm" novalidate>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required aria-required="true" placeholder="you@school.edu" />
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required aria-required="true" placeholder="password" />
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="hint"><input id="remember" type="checkbox" /> <label for="remember">Remember me</label></div>
+            <a href="#" id="forgot" style="color:var(--muted);font-size:13px">Forgot?</a>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn">Sign in</button>
+            <a href="index.html" class="btn ghost">Back</a>
+          </div>
+
+          <div class="footer-note">Don't have an account? <a href="signup.html">Signup</a></div>
+        </form>
+      </div>
+
+      <aside class="aside" aria-hidden="false" style="z-index:3">
+        <div class="badge" aria-hidden="true">CI</div>
+        <p>Sign in and pick your topic. Complete four project phases and earn a certificate.</p>
+      </aside>
+    </div>
+  </div>
+
+<script>
+/* Lightweight wave background + DPR clamp + prefers-reduced-motion handling */
+(function(){
+  const canvas=document.getElementById('bg');
+  const ctx=canvas.getContext('2d');
+  const MAX_DPR=2;
+  let running=true;
+  function resize(){
+    const dpr=Math.min(window.devicePixelRatio||1,MAX_DPR);
+    const rect=canvas.getBoundingClientRect();
+    canvas.width=Math.max(1, Math.floor(rect.width * dpr));
+    canvas.height=Math.max(1, Math.floor(rect.height * dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  // fill parent size
+  canvas.style.width='100%'; canvas.style.height='100%';
+  function draw(now){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(!running) return;
+    resize();
+    const w=canvas.width/(window.devicePixelRatio||1), h=canvas.height/(window.devicePixelRatio||1);
+    ctx.clearRect(0,0, w, h);
+    const t=now*0.001;
+    const layers=[
+      {amp:18,wl:360,speed:0.2,color:'rgba(79,70,229,0.12)',baseline:0.72},
+      {amp:12,wl:220,speed:0.12,color:'rgba(20,184,166,0.08)',baseline:0.80}
+    ];
+    layers.forEach(L=>{
+      ctx.beginPath(); ctx.moveTo(0,h);
+      const base=h*L.baseline;
+      for(let x=0;x<=w;x+=8){
+        const y=base + Math.sin((x/L.wl)*2*Math.PI + t*L.speed)*L.amp;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(w,h); ctx.closePath(); ctx.fillStyle=L.color; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize, {passive:true});
+  requestAnimationFrame(draw);
+  // pause on blur
+  document.addEventListener('visibilitychange', ()=> running = !document.hidden);
+})();
+
+/* Simple client-side form handling (demo) */
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const email = this.email.value.trim();
+  const pass = this.password.value;
+  if(!email || !pass){ alert('Please enter both email and password.'); return; }
+  // record track
+  window.Cognify = window.Cognify || {};
+  window.Cognify.track = window.Cognify.track || function(a,b){ console.log('track',a,b); };
+  window.Cognify.track('login_attempt',{email});
+  // fake success -> forward to index
+  alert('Signed in (demo). Redirecting to dashboard.');
+  window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>
